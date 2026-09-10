@@ -4,6 +4,10 @@
 
 > Flags guide human review. They never determine fraud, corruption, or illegality.
 
+## Live MVP deployment
+
+[Open InfraSight MVP](https://infrasight-ligs.onrender.com/)
+
 ## 1. Project information
 
 | Field | Detail |
