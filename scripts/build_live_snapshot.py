@@ -18,9 +18,15 @@ from src.processing.data_audit import run_data_audit
 from src.processing.transform import normalize_records
 
 
-COMBO = "21,245,0,2,7"  # Maharashtra / Raver / Lok Sabha / 18th Lok Sabha
-SOURCE_LABEL = "Official MPLADS eSAKSHI public dashboard — Raver, Maharashtra; 18th Lok Sabha"
+SOURCE_FILTERS = {
+    "Maharashtra": "21,0,0,2,7",
+    "Gujarat": "27,0,0,2,7",
+    "Delhi": "11,0,0,2,7",
+}
+SOURCE_LABEL = "Official MPLADS eSAKSHI public dashboard — Maharashtra, Gujarat, and Delhi; 18th Lok Sabha multi-location validation slice"
 DATASETS = ("Works Recommended", "Works Completed", "Expenditure Incurred")
+MAX_PROJECTS_PER_STATE = 48
+MAX_PER_DISTRICT = 6
 
 
 def unpack(response: dict, expected_key: str) -> list[dict]:
@@ -48,6 +54,26 @@ def adapt_completed(rows: list[dict]) -> list[dict]:
              "workStatus": "Completed"} for row in rows]
 
 
+def select_multi_district_slice(rows: list[dict], max_projects: int = MAX_PROJECTS_PER_STATE) -> list[dict]:
+    """Keep a bounded, reproducible official slice spread across districts."""
+    grouped: dict[str, list[dict]] = {}
+    for row in rows:
+        district = str(row.get("IDA_NAME") or "Unknown district")
+        grouped.setdefault(district, []).append(row)
+    for district_rows in grouped.values():
+        district_rows.sort(key=lambda row: str(row.get("WORK_RECOMMENDATION_DTL_ID", "")))
+
+    selected: list[dict] = []
+    districts = sorted(grouped)
+    for index in range(MAX_PER_DISTRICT):
+        for district in districts:
+            if len(selected) >= max_projects:
+                return selected
+            if index < len(grouped[district]):
+                selected.append(grouped[district][index])
+    return selected
+
+
 def store(result, scores, run_id: str, snapshot_id: str) -> None:
     database = Path("data/live_infrasight.db")
     if database.exists():
@@ -57,7 +83,7 @@ def store(result, scores, run_id: str, snapshot_id: str) -> None:
     with session_scope() as session:
         session.add(PipelineRun(run_id=run_id, pipeline_version="official-snapshot-v1", scoring_version=SCORING_VERSION,
                                 source_snapshot_id=snapshot_id, status="completed",
-                                run_metadata={"source": SOURCE_LABEL, "combo": COMBO}))
+                                run_metadata={"source": SOURCE_LABEL, "combos": SOURCE_FILTERS}))
         for _, row in result.projects.iterrows():
             project = Project(run_id=run_id, work_id=row.work_id, state=row.state, district=row.district,
                               work_category=row.work_category, work_name=row.work_name, recommended_amount=row.recommended_amount,
@@ -78,17 +104,27 @@ def store(result, scores, run_id: str, snapshot_id: str) -> None:
 
 
 def main() -> None:
-    client = MPLADSClient(COMBO); client.initialize_session()
-    # Client extracts dashboard's JSON-encoded list response. Preserve this exact
-    # retrieved list as the immutable local raw snapshot.
-    raw = {name: client.fetch_report(name) for name in DATASETS}
+    # Preserve every source response. The bounded selection is round-robin by
+    # district so MVP remains fast while covering several official locations.
+    retrieved_by_state: dict[str, dict[str, list[dict]]] = {}
+    for state, combo in SOURCE_FILTERS.items():
+        client = MPLADSClient(combo); client.initialize_session()
+        retrieved_by_state[state] = {name: client.fetch_report(name) for name in DATASETS}
+    raw = {
+        "Works Recommended": [row for state in SOURCE_FILTERS for row in select_multi_district_slice(retrieved_by_state[state]["Works Recommended"])],
+        "Works Completed": [row for state in SOURCE_FILTERS for row in retrieved_by_state[state]["Works Completed"]],
+        "Expenditure Incurred": [row for state in SOURCE_FILTERS for row in retrieved_by_state[state]["Expenditure Incurred"]],
+    }
     received_at = datetime.now(timezone.utc)
-    snapshot_id = f"official_raver_{received_at.strftime('%Y%m%d_%H%M%S')}"
+    snapshot_id = f"official_multilocation_{received_at.strftime('%Y%m%d_%H%M%S')}"
     raw_dir = Path("data/raw") / snapshot_id; raw_dir.mkdir(parents=True, exist_ok=True)
     for name, records in raw.items():
         (raw_dir / f"{name.lower().replace(' ', '_')}.json").write_text(json.dumps(records, indent=2))
     manifest = {"snapshot_id": snapshot_id, "retrieved_at": received_at.isoformat(), "source_url": REPORT_URL,
-                "source": SOURCE_LABEL, "combo": COMBO, "counts": {key: len(value) for key, value in raw.items()},
+                "source": SOURCE_LABEL, "combos": SOURCE_FILTERS, "selection": {"max_projects_per_state": MAX_PROJECTS_PER_STATE, "max_per_district": MAX_PER_DISTRICT,
+                "method": "round-robin by implementing district within each selected state; source records retained in raw response"},
+                "counts": {key: len(value) for key, value in raw.items()},
+                "retrieved_counts": {state: {key: len(value) for key, value in reports.items()} for state, reports in retrieved_by_state.items()},
                 "sha256": {key: hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest() for key, value in raw.items()}}
     (raw_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
     result = normalize_records(adapt_recommended(raw["Works Recommended"]), adapt_completed(raw["Works Completed"]), [])

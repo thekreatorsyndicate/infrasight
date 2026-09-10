@@ -10,31 +10,40 @@
 <body>
   <header class="masthead shell">
     <a class="wordmark" href="/" aria-label="InfraSight home">Infra<span>Sight</span></a>
-    <div class="masthead-meta">MPLADS WORKS / OFFICIAL SNAPSHOT</div>
+    <nav class="nav" aria-label="Workspace views">
+      <button class="nav-item active" data-view="explorer">Explorer</button>
+      <button class="nav-item" data-view="map">Map</button>
+      <button class="nav-item" data-view="admin">Admin</button>
+    </nav>
     <a class="source-link" href="/docs">API reference <span aria-hidden="true">↗</span></a>
   </header>
 
   <main class="shell">
     <section class="intro reveal">
       <div>
-        <p class="eyebrow">Investigation priority</p>
-        <h1>See signal.<br>Inspect evidence.</h1>
+        <p class="eyebrow">MPLADS review workspace</p>
+        <h1>Review records.<br>Check evidence.</h1>
       </div>
-      <p class="intro-copy">An explainable ranking of official MPLADS dashboard records. Scores compare each work with similar local projects; they do not determine fraud or illegality.</p>
+      <p class="intro-copy">Saved MPLADS records are ranked against comparable works. Each score includes its data basis and is for review only.</p>
     </section>
 
     <section class="summary reveal" aria-label="Dataset summary">
       <div class="stat"><span id="project-count">—</span><small>Works in snapshot</small></div>
       <div class="stat"><span id="priority-count">—</span><small>Priority 50+</small></div>
-      <div class="stat note"><small>Comparison</small><strong>Category + district + year</strong></div>
-      <div class="stat note"><small>Scoring basis</small><strong>Cost · spend · duration</strong></div>
+      <div class="stat note"><small>Comparison group</small><strong>Category · district · year</strong></div>
+      <div class="stat note"><small>Available checks</small><strong>Cost · spend · duration</strong></div>
     </section>
 
-    <section class="workspace reveal" aria-label="Project explorer">
+    <section class="snapshot-bar reveal" aria-label="Snapshot controls">
+      <div><p class="eyebrow">Saved dataset</p><strong id="snapshot-label">Official MPLADS multi-location validation slice</strong><span id="snapshot-status">Entries load only after request.</span></div>
+      <button id="fetch-entries" class="fetch-button">Fetch entries <span aria-hidden="true">↓</span></button>
+    </section>
+
+    <section class="workspace reveal view" data-view-panel="explorer" aria-label="Project explorer">
       <div class="explorer-head">
         <div>
-          <p class="eyebrow">Project explorer</p>
-          <h2>Ranked review queue</h2>
+          <p class="eyebrow">Project list</p>
+          <h2>Review queue</h2>
         </div>
         <label class="filter-label">Minimum priority
           <select id="score-filter" aria-label="Minimum investigation priority">
@@ -48,14 +57,32 @@
       <div class="table-wrap" tabindex="0">
         <table>
           <thead><tr><th>Work</th><th>Location</th><th>Recommended</th><th>Priority</th><th>Data note</th></tr></thead>
-          <tbody id="project-rows"><tr><td colspan="5" class="loading">Loading review queue…</td></tr></tbody>
+          <tbody id="project-rows"><tr><td colspan="5" class="loading">Select Fetch entries to load saved records.</td></tr></tbody>
         </table>
       </div>
     </section>
 
-    <section id="detail" class="detail reveal" aria-live="polite">
-      <div class="detail-title"><div><p class="eyebrow">Evidence record</p><h2 id="detail-name">Select a work</h2></div><span id="detail-score" class="score">—</span></div>
+    <section class="view map-view" data-view-panel="map" hidden aria-label="Map overview">
+      <div class="section-head"><div><p class="eyebrow">Location context</p><h2>Dataset coverage</h2></div><p class="section-copy">Official state and implementing-district fields are shown on map. Work-site pins require verified coordinates.</p></div>
+      <div class="map-layout">
+        <article class="map-card"><iframe id="coverage-map" class="coverage-map" title="India map context" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=India&z=5&output=embed"></iframe><p id="map-note" class="map-note">Fetch entries to view recorded location coverage.</p></article>
+        <aside class="location-list"><p class="eyebrow">State coverage</p><div id="location-list"></div><div class="coverage-stat"><strong id="coordinate-coverage">0%</strong><span>work-level coordinate coverage</span></div></aside>
+      </div>
+    </section>
+
+    <section class="view admin-view" data-view-panel="admin" hidden aria-label="Admin insights">
+      <div class="section-head"><div><p class="eyebrow">Admin view</p><h2>Coverage and data quality</h2></div><p class="section-copy">Check what can be compared, what is missing, and where review needs care.</p></div>
+      <div class="insight-grid">
+        <article class="insight-main"><span class="metric-label">Projects with peer comparison</span><strong id="scored-count" class="insight-number">—</strong><p>Priority score appears only where suitable peers exist.</p></article>
+        <article class="insight-main soft"><span class="metric-label">Scored works without spend data</span><strong id="spend-gap-count" class="insight-number">—</strong><p>Spend check remains unavailable where source data is missing.</p></article>
+        <article class="category-panel"><div class="panel-title"><span class="metric-label">Category distribution</span><span class="subtle">Actual recommended value</span></div><div id="category-list"></div></article>
+      </div>
+    </section>
+
+    <section id="detail" class="detail reveal" data-view-panel="explorer" aria-live="polite">
+      <div class="detail-title"><div><p class="eyebrow">Evidence record</p><h2 id="detail-name">Select a work</h2></div><div class="score-wrap"><span id="detail-score" class="score">—</span><span class="score-caption">review priority</span></div></div>
       <div class="detail-meta" id="detail-meta">Choose a row to inspect comparable peers, signals, and data-quality notes.</div>
+      <div id="score-explanation" class="score-explanation" hidden></div>
       <div id="evidence" class="evidence"></div>
     </section>
 
