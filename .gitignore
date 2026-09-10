@@ -10,6 +10,7 @@ __pycache__/
 # Data (keep raw and processed datasets local)
 data/raw/*
 data/processed/*
+data/*.db
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/sample/.gitkeep

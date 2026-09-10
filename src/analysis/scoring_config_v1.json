@@ -1,0 +1,15 @@
+{
+  "scoring_version": "official-snapshot-v1",
+  "minimum_peer_count": 4,
+  "confidence_full_peer_count": 10,
+  "robust_z_denominator": 3.0,
+  "weights": {
+    "cost": 1.0,
+    "expenditure": 1.0,
+    "duration": 1.0
+  },
+  "notes": {
+    "minimum_peer_count": "Reduced from production target n>=20 solely for this small public prototype snapshot.",
+    "unavailable_component": "A component remains unavailable when the source field or a valid peer group is unavailable."
+  }
+}

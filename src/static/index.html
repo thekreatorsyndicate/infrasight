@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>InfraSight — Investigation Priority</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header class="masthead shell">
+    <a class="wordmark" href="/" aria-label="InfraSight home">Infra<span>Sight</span></a>
+    <div class="masthead-meta">MPLADS WORKS / OFFICIAL SNAPSHOT</div>
+    <a class="source-link" href="/docs">API reference <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main class="shell">
+    <section class="intro reveal">
+      <div>
+        <p class="eyebrow">Investigation priority</p>
+        <h1>See signal.<br>Inspect evidence.</h1>
+      </div>
+      <p class="intro-copy">An explainable ranking of official MPLADS dashboard records. Scores compare each work with similar local projects; they do not determine fraud or illegality.</p>
+    </section>
+
+    <section class="summary reveal" aria-label="Dataset summary">
+      <div class="stat"><span id="project-count">—</span><small>Works in snapshot</small></div>
+      <div class="stat"><span id="priority-count">—</span><small>Priority 50+</small></div>
+      <div class="stat note"><small>Comparison</small><strong>Category + district + year</strong></div>
+      <div class="stat note"><small>Scoring basis</small><strong>Cost · spend · duration</strong></div>
+    </section>
+
+    <section class="workspace reveal" aria-label="Project explorer">
+      <div class="explorer-head">
+        <div>
+          <p class="eyebrow">Project explorer</p>
+          <h2>Ranked review queue</h2>
+        </div>
+        <label class="filter-label">Minimum priority
+          <select id="score-filter" aria-label="Minimum investigation priority">
+            <option value="0">All works</option>
+            <option value="50">50 and above</option>
+            <option value="75">75 and above</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="table-wrap" tabindex="0">
+        <table>
+          <thead><tr><th>Work</th><th>Location</th><th>Recommended</th><th>Priority</th><th>Data note</th></tr></thead>
+          <tbody id="project-rows"><tr><td colspan="5" class="loading">Loading review queue…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="detail" class="detail reveal" aria-live="polite">
+      <div class="detail-title"><div><p class="eyebrow">Evidence record</p><h2 id="detail-name">Select a work</h2></div><span id="detail-score" class="score">—</span></div>
+      <div class="detail-meta" id="detail-meta">Choose a row to inspect comparable peers, signals, and data-quality notes.</div>
+      <div id="evidence" class="evidence"></div>
+    </section>
+
+    <aside class="disclaimer reveal"><span>Data source</span><p id="source-note">Official public MPLADS dashboard snapshot. Flagged for human review; this system does not determine fraud or illegality.</p></aside>
+  </main>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

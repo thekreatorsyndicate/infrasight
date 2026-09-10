@@ -10,20 +10,20 @@ Build reproducible MPLADS anomaly intelligence that prioritizes works for human 
 - [ ] Inspect Empowered Indian MPLADS client implementation.
 - [ ] Capture official dashboard request as cURL.
 - [ ] Document method, URL, headers, cookies, request body, dataset parameters, and pagination.
-- [ ] Reproduce exact request in Python using `requests.Session()`.
+- [x] Reproduce exact request in Python using `requests.Session()`.
 - [ ] Fetch same small sample twice.
-- [ ] Store fetch timestamp, parameters, HTTP status, response hash, and source URL.
+- [x] Store fetch timestamp, parameters, response hash, and source URL. HTTP status capture remains open.
 
 **Pass condition:** repeatable official or approved response; known access/legal constraints.
 
 ## Phase 1 — Repository and raw ingestion
 
-- [ ] Create project structure.
-- [ ] Add `.gitignore` for `.env`, session cookies, raw private captures, Python/Node artifacts.
+- [x] Create project structure.
+- [x] Add `.gitignore` for `.env`, session cookies, raw private captures, Python/Node artifacts.
 - [ ] Add `.env.example`; never commit real credentials or session data.
 - [ ] Build `ingestion/mplads_client.py` for sessions, timeouts, retry/backoff, pagination, and dataset retrieval only.
 - [ ] Build `ingestion/fetch_data.py` for recommended, completed, and expenditure datasets.
-- [ ] Save immutable snapshots:
+- [x] Save immutable snapshots:
 
 ```text
 data/raw/<run_id>/
@@ -39,28 +39,28 @@ data/raw/<run_id>/
 
 ## Phase 2 — Data audit
 
-- [ ] Build actual field dictionary from returned JSON.
+- [x] Build actual field dictionary from returned JSON.
 - [ ] Confirm amount units, null formats, date formats, and date semantics.
-- [ ] Measure record counts, unique IDs, duplicate IDs, missing fields.
-- [ ] Measure exact `workId` join rate across datasets.
-- [ ] Report unmatched and duplicate records.
-- [ ] Do not use fallback joins unless separately documented and labeled.
-- [ ] Publish `reports/data_quality_<run_id>.md`.
+- [x] Measure record counts, unique IDs, duplicate IDs, missing fields.
+- [x] Measure exact `workId` join rate across datasets.
+- [x] Report unmatched and duplicate records.
+- [x] Do not use fallback joins unless separately documented and labeled.
+- [x] Publish `reports/data_quality_<run_id>.md`.
 
 **Pass condition:** fields, coverage, and joinability known before modeling.
 
 ## Phase 3 — Normalize and validate
 
 - [ ] Build `ingestion/transform.py`.
-- [ ] Normalize projects and aggregate expenditure only by exact `workId`.
+- [x] Normalize projects and aggregate expenditure only by exact `workId`.
 - [ ] Output `data/processed/projects.csv` and `expenditures.csv`.
-- [ ] Preserve suspicious values; do not silently delete them.
+- [x] Preserve suspicious values; do not silently delete them.
 - [ ] Add data-integrity flags:
-  - [ ] Duplicate work ID
-  - [ ] Negative amount
-  - [ ] Invalid date
-  - [ ] Completion before recommendation
-  - [ ] Expenditure over recommended amount
+- [x] Duplicate work ID
+- [x] Negative amount
+- [x] Invalid date
+- [x] Completion before recommendation
+- [x] Expenditure over recommended amount
   - [ ] Missing critical field
   - [ ] Extreme amount
 - [ ] Write cleaning log: raw value, normalized value, transformation reason.
@@ -80,22 +80,22 @@ category + district + year
 ```
 
 - [ ] Require minimum peer group size; initial default: `n >= 20`.
-- [ ] Store peer group definition, hierarchy level, and peer count for each score.
-- [ ] If no valid peer group exists, mark score component unavailable; do not force a score.
+- [x] Store peer group definition, hierarchy level, and peer count for each score.
+- [x] If no valid peer group exists, mark score component unavailable; do not force a score.
 
 **Pass condition:** every anomaly shows valid comparison context.
 
 ## Phase 5 — Explainable anomaly engine
 
-- [ ] Implement cost anomaly using actual confirmed amount field and robust statistics.
-- [ ] Implement expenditure anomaly relative to comparable-project utilization.
-- [ ] Do not flag near-100% expenditure alone.
-- [ ] Implement unusual completion-time anomaly from recommendation to completion date.
-- [ ] Never call duration an “official delay” without official expected-completion field.
-- [ ] Keep data-integrity flags separate from statistical anomaly scores.
-- [ ] Store evidence for every component.
-- [ ] Add `confidence_score`, `data_coverage`, `peer_count`, and `scoring_version`.
-- [ ] Store weights/thresholds in versioned `scoring_config_v1.json`, not code.
+- [x] Implement cost anomaly using actual confirmed amount field and robust statistics.
+- [x] Implement expenditure anomaly relative to comparable-project utilization.
+- [x] Do not flag near-100% expenditure alone.
+- [x] Implement unusual completion-time anomaly from recommendation to completion date.
+- [x] Never call duration an “official delay” without official expected-completion field.
+- [x] Keep data-integrity flags separate from statistical anomaly scores.
+- [x] Store evidence for every component.
+- [x] Add `confidence_score`, `data_coverage`, `peer_count`, and `scoring_version`.
+- [x] Store weights/thresholds in versioned `scoring_config_v1.json`, not code.
 
 **Output:** `risk_scores.csv` with score, component scores, confidence, peer metadata, and evidence.
 
@@ -113,8 +113,8 @@ category + district + year
 
 - [ ] Define CSV/JSON contracts before database implementation.
 - [ ] Create PostgreSQL tables: `projects`, `expenditures`, `risk_scores`, `pipeline_runs`.
-- [ ] Store `run_id`, `source_snapshot_id`, `pipeline_version`, `scoring_version`, `generated_at`.
-- [ ] Build FastAPI endpoints:
+- [x] Store `run_id`, `source_snapshot_id`, `pipeline_version`, `scoring_version`, `generated_at`.
+- [x] Build FastAPI endpoints:
 
 ```text
 GET /projects
@@ -123,16 +123,16 @@ GET /projects/high-risk
 GET /stats
 ```
 
-- [ ] Add filters after base endpoints work.
+- [x] Add filters after base endpoints work.
 
 **Pass condition:** API returns score, confidence, integrity flags, and evidence.
 
 ## Phase 8 — Frontend
 
-- [ ] Build dashboard: totals, risk distribution, project explorer entry.
-- [ ] Build explorer: filters, sortable results, project table.
-- [ ] Build investigation page: score, confidence, peer group, evidence, integrity flags.
-- [ ] Display disclaimer on relevant pages:
+- [x] Build dashboard: totals, risk distribution, project explorer entry.
+- [x] Build explorer: filters, sortable results, project table.
+- [x] Build investigation page: score, confidence, peer group, evidence, integrity flags.
+- [x] Display disclaimer on relevant pages:
 
 > Flagged for human review. This system does not determine fraud or illegality.
 
@@ -148,7 +148,7 @@ GET /stats
 
 ## First milestone
 
-- [ ] Take one real MPLADS work through full chain:
+- [x] Take one real MPLADS work through full chain:
 
 ```text
 Official API
@@ -172,10 +172,10 @@ Official API
 ## MVP definition of done
 
 - [ ] Official or approved source is reproducibly fetched.
-- [ ] Raw snapshots and manifests are preserved.
-- [ ] Field dictionary and join audit exist.
-- [ ] Suspicious data is preserved and flagged.
-- [ ] Scores include evidence, peer count, confidence, and version.
-- [ ] One real work is traced end to end.
-- [ ] Dashboard exposes evidence.
-- [ ] No copy claims fraud, corruption, or illegality.
+- [x] Raw snapshots and manifests are preserved.
+- [x] Field dictionary and join audit exist.
+- [x] Suspicious data is preserved and flagged.
+- [x] Scores include evidence, peer count, confidence, and version.
+- [x] One real work is traced end to end.
+- [x] Dashboard exposes evidence.
+- [x] No copy claims fraud, corruption, or illegality.
