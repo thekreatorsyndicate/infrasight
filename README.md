@@ -135,6 +135,10 @@ python -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 ```
 
+## Live MVP deployment
+
+[Open InfraSight MVP](https://infrasight-ligs.onrender.com/)
+
 ## 10. Run MVP
 
 Build or refresh saved source slice only when intentionally retrieving new data:
@@ -165,7 +169,3 @@ Replace before submission.
 
 - [Presentation framing and final-link placeholder](submission/PRESENTATION.md)
 - [Demo-video flow and public-link placeholder](submission/DEMO.md)
-
-## Submission safety
-
-Do not commit passwords, API keys, tokens, private credentials, or `.env` files. Before submission, test public repository, PPT link, video link, and screenshots in logged-out/incognito browser.
