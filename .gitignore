@@ -21,3 +21,14 @@ data/*.db
 # Editors
 .idea/
 .vscode/
+
+# Personal submission guides (keep local; do not publish with project)
+SUBMISSION_GUIDE.md
+assets/screenshots/README.md
+submission/PRESENTATION.md
+submission/DEMO.md
+
+# Local planning and design notes
+.impeccable.md
+plan.html
+SIH26102_EXECUTION_PLAN.md

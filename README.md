@@ -154,10 +154,12 @@ Replace before submission.
 
 | Member | Role |
 | --- | --- |
-| `<NAME>` | Data/API and source-ingestion design |
-| `<NAME>` | Analytics, validation, and scoring design |
-| `<NAME>` | Backend, storage, and reviewer workflow |
-| `<NAME>` | Frontend, communication, and presentation |
+| `Swastik Pal` | Reviewer workflow, Data/API and source-ingestion design |
+| `Lavanya` | Frontend, communication, and presentation |
+| `Sambhav Jain` | Frontend, communication, and presentation |
+| `Aryaman Jain` | Backend, storage, and reviewer workflow |
+| `Avyam Singhal` | Backend, storage, and reviewer workflow |
+
 
 ## 12. Presentation and demo
 
