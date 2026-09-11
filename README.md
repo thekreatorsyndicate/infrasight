@@ -172,4 +172,4 @@ Replace before submission.
 ## 12. Presentation and demo
 
 - [Presentation](submission/)
-- [Demo-video](submission/DEMO.md)
+- [Demo-video](https://drive.google.com/file/d/1arDwlpvRp_l2zvoxkj01CtVG5dyWj18j/view?usp=sharing/)
