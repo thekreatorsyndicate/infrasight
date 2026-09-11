@@ -171,5 +171,5 @@ Replace before submission.
 
 ## 12. Presentation and demo
 
-- [Presentation framing and final-link placeholder](submission/PRESENTATION.md)
-- [Demo-video flow and public-link placeholder](submission/DEMO.md)
+- [Presentation](submission/)
+- [Demo-video](submission/DEMO.md)
